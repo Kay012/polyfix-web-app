@@ -1,0 +1,82 @@
+﻿@model Poly.Models.Project
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+
+<div>
+    
+    <div class=" row">
+        
+        <div class="from-group col-md-3">
+            <h4>Project Details</h4>
+        </div>
+        <div class="from-group col-md-2">
+            <a asp-action="TskIndex" asp-route-id="@Model.ProjectId" class="btn btn-outline-primary btn-block">View Tasks</a>
+        </div>
+        <div class="from-group col-md-2">
+            <a asp-action="Index" asp-route-id="@Model.ProjectId" class="btn btn-outline-primary btn-block">View Forms</a>
+            @*<button type="submit" value="Submit" onclick="window.location.href='pass your page name here'"></button>*@
+        </div>
+    </div>
+
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Location)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Location)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ProjectImage)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ProjectImage)
+        </dd>
+    </dl>
+</div>
+<div>
+     
+    
+</div>
+<br />
+<br />
+<div class="form-row">
+    <div class="from-group col-md-1">
+        <a asp-action="Edit" class="btn btn-primary btn-block text-uppercase" asp-route-id="@Model.ProjectId">Edit</a>
+
+    </div>
+        <div class="from-group col-md-1">
+            <a asp-action="Index" class="btn btn-danger btn-block text-uppercase">Back</a>
+        @*<button type="submit" value="Submit" onclick="window.location.href='pass your page name here'"></button*@
+    </div>
+</div>
+
+<!--<-->@*script type="text/javascript">
+    $(document).ready(function () {
+
+      $('#btnsubmit').click(function (e)
+      {
+          location.href = '@Url.Content("~/Home/tsk/")';
+      });
+
+    });
+</script>
+
+
+//change below input tag
+<input id='btnsubmit' type="button" value="Submit" />*@

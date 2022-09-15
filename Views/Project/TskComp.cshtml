@@ -1,0 +1,109 @@
+﻿@model Poly.Models.Tsk
+
+@{
+    ViewData["Title"] = "TskComp";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div>
+    <h4>@Model.Name Results</h4>
+    <hr />
+    <dl class="row">
+        @*<dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>*@
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DateDue)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DateDue)
+        </dd>
+        @*<dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Comment)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Comment)
+        </dd>*@
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ProjectRef)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ProjectRef.Name)
+        </dd>
+    </dl>
+
+    @if ((Model.Form1 == true) || (Model.Form2 == true) || (Model.Form3 == true))
+    {
+
+        <hr />
+        <h4>Forms</h4>
+        <hr />
+
+    }
+
+
+    <dl class="row">
+
+        @if (Model.Form1 == true)
+        {
+        <dt class="col-sm-2">
+            PTO Evaluation
+        </dt>
+            <dd class="col-sm-10">
+                @*<a asp-controller="Form" asp-action="Form" asp-route-Tskid="@Model.TskId" asp-route-idPr="@Model.ProjectId">Form</a> |*@
+                |   <a asp-controller="Form" asp-action="Result" asp-route-Tskid="@Model.TskId" asp-route-idPr="@Model.ProjectId">View form result</a>
+            </dd>
+
+        }
+
+
+        @if (Model.Form2 == true)
+        {
+            <dt class="col-sm-2">
+                Incident Register
+            </dt>
+            <dd class="col-sm-10">
+                @*<a asp-controller="Form2" asp-action="Form" asp-route-Tskid="@Model.TskId" asp-route-idPr="@Model.ProjectId">Form</a> |*@
+                |   <a asp-controller="Form2" asp-action="Result" asp-route-Tskid="@Model.TskId" asp-route-idPr="@Model.ProjectId">View form result</a>
+            </dd>
+        }
+
+        @if (Model.Form3 == true)
+        {
+            <dt class="col-sm-2">
+                Mini Risk Assesment
+            </dt>
+            <dd class="col-sm-10">
+                @*<a asp-controller="Form3" asp-action="Form" asp-route-Tskid="@Model.TskId" asp-route-idPr="@Model.ProjectId">Form</a> |*@
+                |   <a asp-controller="Form3" asp-action="Result" asp-route-Tskid="@Model.TskId" asp-route-idPr="@Model.ProjectId">View form result</a>
+            </dd>
+        }
+
+    </dl>
+
+
+    <hr />
+    <h4>Comments</h4>
+    <hr />
+
+    <textarea style="resize:none;" readonly cols="70" rows="7">@Html.DisplayFor(modelItem => Model.Comment)</textarea>
+
+
+</div>
+<div class="form-row">
+    <div class="from-group col-md-1">
+        <a asp-action="TskIndex" class="btn btn-danger btn-block" asp-route-id="@Model.ProjectId">Back</a>
+    </div>
+
+
+</div>

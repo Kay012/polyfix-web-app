@@ -1,0 +1,124 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using PolyFix.Models;
+@inject SignInManager<PolyFixAppUser> SignInManager
+
+@model IEnumerable<Poly.Models.Project>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<style>
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        padding: 12px 16px;
+        z-index: 1;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    #butto:hover {
+        opacity: 0.8;
+    }
+</style>
+
+<h4>Projects</h4>
+<hr />
+
+@if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+{
+    <p class="col-md-2" id="butto">
+        <a asp-action="Create" class="btn btn-primary btn-block hoverable"><i class="fa fa-plus-square-o" aria-hidden="true"></i> New Project</a>
+    </p>
+
+}
+@*<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Location)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>*@
+
+
+<div class="row" style="background-color: none">
+    @foreach (var item in Model)
+    {
+     
+
+        //var photopath = "~/images/" + (@Html.DisplayFor(modelItem => item.Name)??
+        <section class="col-lg-6 col-md-12 py-6">
+            <div class="card m-3 " style="padding: 10px; box-shadow: 2px 2px 2px 2px #888888; background-color: white">
+                @*<img src="@Html.DisplayFor(modelItem => item.ProjectImage)" class="img-fluid card-img-top" />*@
+
+
+                <div class="card-header" style="color:blue; text-transform:capitalize">
+                    <div class="row" style="display:flex; justify-content:space-between">
+
+                        <div class="">
+                            <a asp-action="TskIndex" asp-route-id="@item.ProjectId"><h4 style="text-transform:capitalize;display: -webkit-box;overflow:hidden; text-overflow: ellipsis;  -webkit-line-clamp: 1; -webkit-box-orient: vertical;">@Html.DisplayFor(modelItem => item.Name)</h4></a>
+                        </div>
+
+                        @if ((SignInManager.IsSignedIn(User) && User.IsInRole("Admin")) || (SignInManager.IsSignedIn(User) && User.IsInRole("Manager")))
+                        {
+                        
+                            <div class="nav-item dropdown" align="right">
+                                <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-v" aria-hidden="true" style="padding-right:8px"></i></a>
+                                <div class="dropdown-menu" aria-labelledby="dropdown01" align="center" style="margin-left:-100px">
+                                    <a class="dropdown-item" asp-controller="UserProjects" asp-action="Index" asp-route-id="@item.ProjectId">Manage Users</a>
+                                    <a class="dropdown-item" asp-action="Details" asp-route-id="@item.ProjectId">View Results</a>
+                                    <a class="dropdown-item" asp-action="Edit" asp-route-id="@item.ProjectId">Edit</a>
+                                    <a class="dropdown-item" asp-action="Delete" asp-route-id="@item.ProjectId">Delete</a>
+                                </div>
+                            </div>
+
+                        }
+                    </div>
+                </div>
+
+
+
+                <div class="card-body" style="">
+                    <p>
+                        <h5 style="font-size:medium; font-weight:bold;color:#81878C; display: -webkit-box;overflow:hidden; text-overflow: ellipsis;  -webkit-line-clamp: 3; -webkit-box-orient: vertical;">@item.Description</h5>
+                    </p>
+                    <hr />
+                    <p>
+                        <h7><i class="fa fa-map-marker" aria-hidden="true"></i> @item.Location</h7>
+                    </p>
+                    <hr />
+                    <p>
+                        <h8><i class="fa fa-users" aria-hidden="true"></i> @item.UsersAssigned</h8>
+                    </p>
+
+                </div>
+
+
+            </div>
+        </section>
+    }
+</div>
+
+
+
+

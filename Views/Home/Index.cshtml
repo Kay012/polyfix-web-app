@@ -1,0 +1,61 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@using Microsoft.AspNetCore.Identity
+@using PolyFix.Models;
+@inject SignInManager<PolyFixAppUser> SignInManager
+
+<style>
+    button:hover {
+        opacity: 0.6;
+    }
+</style>
+<div class="text-center" style="        align-items: center;
+        margin-bottom: 0;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 100%;
+        min-width: 100%;
+        background-image: url(https://media.istockphoto.com/photos/abstract-backgrounds-picture-id1204765535?b=1&k=20&m=1204765535&s=170667a&w=0&h=y6Q5-cagP0gu24NUMP48Vikh9XFwC9peqP11PlH6mv4=);
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;">
+    <div style="max-height:480px; min-height:450px; align-items:center; justify-content:center; padding-top:100px;">
+        <h1 class="display-4" style="color: #009DDC; font-weight: bold;">Welcome</h1>
+        @*<p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>*@
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <p style="color:black; font-weight:bold; font-size: 17px">Polyfix Home.</p>
+        }
+        else
+        {
+            <p style="color:black; font-weight:bold; font-size: 17px">Please Login or Register.</p>
+        }
+
+    </div>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <div style="align-content:center; padding-bottom:100px;">
+
+
+            <a class="nav-link text" asp-area="" asp-controller="Project" asp-action="Index"><button class="btn btn-primary btn-block" style="padding-left:40px; padding-right:40px;">View Projects</button></a>
+            
+        </div>
+    }
+    else
+    {
+        <div style="display:flex; flex-direction:row;">
+            <div style="align-content:center; padding-bottom:100px; margin-right:5px;">
+                <a asp-area="Identity" asp-page="/Account/Login"><button class="btn btn-primary btn-block" style="padding-left:40px; padding-right:40px;">Login</button></a>
+            </div>
+            <div style="align-content:center; padding-bottom:100px; margin-left:5px;">
+                <a asp-area="Identity" asp-page="/Account/Register"><button class="btn btn-primary btn-block" style="padding-left:40px; padding-right:40px;">Register</button></a>
+            </div>
+        </div>
+    }
+
+
+</div>
+</div>

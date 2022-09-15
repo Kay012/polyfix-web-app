@@ -1,0 +1,61 @@
+﻿@model IEnumerable<Poly.Models.UserProject>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.Projects.Name</h2>
+
+<p>
+    <a asp-action="Create" asp-route-id="@ViewBag.Projects.ProjectId">Manage Users</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.User.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User.UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User.LastName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => item.User.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.User.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.User.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.User.LastName)
+                </td>
+            </tr>
+        }
+
+        
+    </tbody>
+    
+
+</table>
+
+<div class="from-group col-md-1">
+    <a asp-controller="Project" asp-action="Index" class="btn btn-danger btn-block text-uppercase">Back</a>
+
+</div>
+
+

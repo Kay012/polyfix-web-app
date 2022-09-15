@@ -1,0 +1,139 @@
+﻿@model Poly.Models.UserProject
+
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+
+}
+
+@*@model IEnumerable<Poly.Models.UserProject>*@
+
+
+
+<h2>@ViewBag.Projects.Name</h2>
+
+<p>Select users for this project</p>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label class="control-label">Project Id</label>
+                @*<select asp-for="ProjectId" class="form-control" asp-items="ViewBag.ProjectId"></select>*@
+
+                <select asp-for="ProjectId" class="form-control" type="hidden">
+                    <option value="@ViewBag.Projects.ProjectId">@ViewBag.Projects.ProjectId</option>
+                </select>
+            </div>
+
+            @*<div class="form-group">
+            <label asp-for="UserId" class="control-label"></label>
+            <select multiple="multiple" asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
+        </div>*@
+
+
+
+
+            <style>
+
+                th, td {
+                    padding: 7px;
+                    background-color: none;
+                }
+            </style>
+
+            @if (ViewBag.NotAddedUsersCOUNT != 0)
+            {
+
+            <p><h4 style=" color: blue;">Un-Assigned users (check to add)</h4></p>
+
+            <table>
+
+
+                @foreach (var item in ViewBag.NotAddedUsers)
+                {
+
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="UserIds" value="@item.Id" />
+                        </td>
+                        @*}
+
+
+                    }*@
+
+
+                        <td>
+                            <label> @item.UserName, @item.FirstName @item.LastName </label>
+                        </td>
+
+                    </tr>
+
+                }
+            </table>
+
+            }
+
+
+            @if (ViewBag.selectedUsersCOUNT != 0)
+            {
+
+            <p><h4 style=" color: red;">Assigned users (check to remove)</h4></p>
+
+            <table>
+
+
+                @foreach (var item in ViewBag.selectedUsers)
+                {
+
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="UserIDELS" value="@item.Id" />
+                        </td>
+                        @*}
+
+
+                    }*@
+
+
+                        <td>
+                            <label> @item.UserName, @item.FirstName @item.LastName </label>
+                        </td>
+
+                    </tr>
+
+                }
+            </table>
+
+            }
+
+
+
+
+            <div class="form-group">
+                <input type="submit" value="Update List" class="btn btn-primary" />
+            </div>
+
+            @*<div class="form-group">
+                <button asp-action="Updated" class="btn btn-primary">Add Selected Users</button>
+            </div>*@
+
+            <div>
+                <a asp-action="Index" asp-route-id="@ViewBag.Projects.ProjectId">Back to List</a>
+            </div>
+        </form>
+    
+        
+    </div>
+
+    
+
+    <div>
+    </div>
+</div>
+
+

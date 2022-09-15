@@ -1,0 +1,130 @@
+﻿@model Poly.Models.Tsk
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+@*<h1>Task</h1>*@
+
+<div>
+    <h1>@Model.Name</h1>
+    <hr />
+    <dl class="row">
+        @*<dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Name)
+            </dd>*@
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DateDue)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DateDue)
+        </dd>
+        @*<dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.ProjectRef)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.ProjectRef.Name)
+            </dd>*@
+    </dl>
+
+    @if ((Model.Form1 == true) || (Model.Form2 == true) || (Model.Form3 == true))
+    {
+
+        <hr />
+        <h4>Forms</h4>
+       
+
+    }
+    <dl class="row">
+
+        @if (Model.Form1 == true)
+        {
+            <dt class="col-sm-2">
+                PTO Evaluation
+            </dt>
+            <dd class="col-sm-10">
+                |   <a asp-controller="Form" asp-action="Form" asp-route-Tskid="@Model.TskId" asp-route-idPr="@Model.ProjectId">Fill in form</a>
+                @*<a asp-controller="Form" asp-action="Result" asp-route-Tskid="@Model.TskId" asp-route-idPr="@Model.ProjectId">Form Res</a>*@
+            </dd>
+
+        }
+
+
+        @if (Model.Form2 == true)
+        {
+            <dt class="col-sm-2">
+                Incident Register
+            </dt>
+            <dd class="col-sm-10">
+                |   <a asp-controller="Form2" asp-action="Form" asp-route-Tskid="@Model.TskId" asp-route-idPr="@Model.ProjectId">Fill in form</a>
+                @*<a asp-controller="Form2" asp-action="Result" asp-route-Tskid="@Model.TskId" asp-route-idPr="@Model.ProjectId">Form Res</a>*@
+            </dd>
+        }
+
+        @if (Model.Form3 == true)
+        {
+            <dt class="col-sm-2">
+                Mini Risk Assesment
+            </dt>
+            <dd class="col-sm-10">
+                |   <a asp-controller="Form3" asp-action="Form" asp-route-Tskid="@Model.TskId" asp-route-idPr="@Model.ProjectId">Fill in form</a>
+                @*<a asp-controller="Form3" asp-action="Result" asp-route-Tskid="@Model.TskId" asp-route-idPr="@Model.ProjectId">Form Res</a>*@
+            </dd>
+        }
+
+    </dl>
+
+    <hr />
+    <h4>Comments</h4>
+    
+
+    @*<div class="column" style="padding: 6px;">
+            <textarea style="resize:none; padding: 5px; border-radius: 5px; border-color:black; outline-width: 0; width:100%;" readonly cols="70" rows="7">@Html.DisplayFor(modelItem => Model.Comment)</textarea>
+        </div>*@
+
+</div>
+ <form method="post" asp-action="TskDetails">
+
+     <div class="form-group">
+         @*<input type="text" id="Comment" class="form-control" />*@
+         @*<input asp-for="Comment" placeholder="Your name goes here" />*@
+
+         <textarea id="Comment" name="Comment" cols="70" rows="7"placeholder="Enter comments"></textarea>
+         <span asp-validation-for="Comment" class="text-danger"></span>
+     </div>
+
+
+
+
+<div class="form-row">
+    <div class="from-group col-md-1">
+        <a asp-action="TskIndex" class="btn btn-danger btn-block" asp-route-id="@Model.ProjectId">Back</a>
+        @*<button type="submit" value="Submit" onclick="window.location.href='pass your page name here'"></button*@
+    </div>
+
+        <input type="hidden" asp-for="TskId" />
+        <input type="submit" value="Complete" class="btn btn-primary " asp-route-id="@Model.TskId" asp-route-idPr="@Model.ProjectId" />
+
+    
+
+
+
+
+
+    @*<div class="from-group col-md-1">
+            <a asp-controller="Form" asp-action="Form" asp-route-Tskid="@Model.TskId" asp-route-idPr="@Model.ProjectId" class="btn btn-primary btn-block text-uppercase">Form</a>
+
+            <a asp-controller="Form" asp-action="Result" asp-route-Tskid="@Model.TskId" asp-route-idPr="@Model.ProjectId" class="btn btn-primary btn-block text-uppercase">Form Res</a>
+
+        </div>*@
+</div>
+</form>

@@ -1,0 +1,88 @@
+﻿@model Poly.Models.Tsk
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+
+<h4>Edit Task</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="TskEdit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="TskId" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" cols="6" rows="5" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateDue" class="control-label"></label>
+                <input asp-for="DateDue" class="form-control" />
+                <span asp-validation-for="DateDue" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProjectId" class="control-label"></label>
+                <select asp-for="ProjectId" class="form-control" asp-items="ViewBag.ProjectId"></select>
+                <span asp-validation-for="ProjectId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+
+
+                <input asp-for="isComplete" />
+                <label class="control-label" style="font-weight:bold; color:green; padding-left:10px">Task Complete?</label>
+            </div>
+
+
+            <hr />
+            <h4>Edit Forms</h4>
+            <hr />
+
+
+
+            <dl class="row">
+                <dt class="col-sm-10">
+                    <label class="control-label">PTO Evaluation Record</label>
+                </dt>
+                <dd class="col-sm-10">
+                    <input asp-for="Form1" />
+                    @*<span asp-validation-for="Form1" class="text-danger"></span>*@
+                </dd>
+                <dt class="col-sm-10">
+                    <label class="control-label">Incident Register</label>
+                </dt>
+                <dd class="col-sm-10">
+                    <input asp-for="Form2" />
+                    @*<span asp-validation-for="Form2" class="text-danger"></span>*@
+                </dd>
+                <dt class="col-sm-10">
+                    <label class="control-label">Mini Risk Assesment</label>
+                </dt>
+                <dd class="col-sm-10">
+                    <input asp-for="Form3" />
+                    @*<span asp-validation-for="Form3" class="text-danger" width="0.1"></span>*@
+                </dd>
+            </dl>
+
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary text-uppercase" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="TskIndex" class="btn btn-danger text-uppercase" asp-route-id="@Model.ProjectId">Back</a>
+    
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

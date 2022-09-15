@@ -1,0 +1,89 @@
+﻿@model IEnumerable<PolyFix.Models.Notification>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>Notifications</h4>
+
+<table class="table">
+    <thead>
+        <tr>
+            @*<th>
+                @Html.DisplayNameFor(model => model.FromUserId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ToUserId)
+            </th>*@
+            <th>
+                <p>From</p>
+            </th>
+            @*<th>
+                @Html.DisplayNameFor(model => model.ToUserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NotiType)
+            </th>*@
+            <th>
+                @*@Html.DisplayNameFor(model => model.NotiHeader)*@
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.NotiBody)*@
+            </th>
+            <th>
+                <p>URL</p>
+            </th>
+            <th>
+                <p>date</p>
+            </th>
+            @*<th>
+                @Html.DisplayNameFor(model => model.isRead)
+            </th>*@
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            @*<td>
+                @Html.DisplayFor(modelItem => item.FromUserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ToUserId)
+            </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.FromUserName)
+            </td>
+            @*<td>
+                @Html.DisplayFor(modelItem => item.ToUserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NotiType)
+            </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.NotiHeader)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NotiBody)
+            </td>
+            <td>
+                @*@Html.DisplayFor(modelItem => item.Url)*@
+
+                
+                @if (item.Url != null)
+                { 
+                <a asp-action="NotiRedirect" asp-route-sUrl="@item.Url">Open</a>
+                }
+
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateCreated)
+            </td>
+            @*<td>
+                @Html.DisplayFor(modelItem => item.isRead)
+            </td>*@
+        </tr>
+}
+    </tbody>
+</table>

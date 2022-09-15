@@ -1,0 +1,123 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model PolyFix.Models.CompletedSurvey;
+@using Newtonsoft.Json.Linq;
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Survey";
+
+    //var PID = Model.ProjectId;
+    // var TID = Model.TaskId;
+
+}
+
+
+<div class="row">
+    <div class="col">
+        <div id="surveyContainer"></div>
+    </div>
+</div>
+
+
+
+@section Scripts
+{
+    <script src="https://unpkg.com/jquery"></script>
+    <script src="https://unpkg.com/survey-jquery@1.8.48/survey.jquery.min.js"></script>
+    <script type="text/javascript" src="./index.js"></script>
+
+    <script>
+        var surveyJSON = {
+            title: "Mini Risk Assesment", questions: [
+                {
+                    name: "Ref",
+                    type: "text",
+                    title: "Safety Representative / Officer Name:",
+                    isRequired: true,
+                }
+
+                , {
+                    name: "DT",
+                    type: "text",
+                    inputType: "date",
+                    title: "Date",
+                    isRequired: true
+                }
+
+                , {
+                    type: "comment",
+                    name: "ttl",
+                    title: "Task (What must be done?):"
+                }
+
+                , {
+                    type: "comment",
+                    name: "ttl",
+                    title: "What equipment / tools do I need?"
+                }
+
+                , {
+                    type: "comment",
+                    name: "ttl",
+                    title: "List all  hazards:"
+                }
+
+                , {
+                    type: "comment",
+                    name: "ttl",
+                    title: "What can go wrong?"
+                }
+
+                , {
+                    type: "comment",
+                    name: "ttl",
+                    title: "Control measures (how do I prevent it from going wrong?)"
+                }
+                ,
+                {
+                    type: "signaturepad",
+                    name: "signature",
+                    title: "Employee signature"
+                }
+            ],
+
+            "showQuestionNumbers": "off"
+        };
+
+       Survey.StylesManager.applyTheme("bootstrap");
+        var survey = new Survey.Model(surveyJSON);
+        $("#surveyContainer").Survey({
+            model: survey
+            //onComplete: saveSurvey
+        });
+
+        Survey
+            .StylesManager
+            .applyTheme("modern");
+
+        survey.showCompletedPage = false;
+         survey
+                    .onComplete
+                    .add(function (survey) {
+
+                        $.ajax({
+                            type: "POST",
+                            url: "@Url.Action("FormFill")",
+                            data: {
+                                data: JSON.stringify(survey.data)
+                            },
+                            success: function (msg) {
+                                console.log(msg);
+                                alert("Form Submitted");
+                            },
+                            error: function (req, status, error) {
+                                alert(error);
+                            }
+                        });
+                    }).done(function () {
+                        window.location.href = '/';
+                    });
+
+    </script>
+}

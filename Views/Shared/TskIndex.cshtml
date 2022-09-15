@@ -1,0 +1,1072 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using PolyFix.Models;
+@using Poly.Models;
+@inject SignInManager<PolyFixAppUser> SignInManager
+
+@model IEnumerable<Poly.Models.Tsk>
+
+
+@{
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewData["Title"] = "Tsk";
+
+    var proId = ViewData["ProjectId"];
+
+    var proName = ViewData["ProjectName"].ToString();
+
+
+    //get the lists
+
+    //User lists
+
+    List<Tsk> MyTsks = ViewData["MyTsks"] != null ? (List<Tsk>)ViewData["MyTsks"] : null;
+
+    List<Tsk> MyOverDueTsks = ViewData["MyOverDueTsks"] != null ? (List<Tsk>)ViewData["MyOverDueTsks"] : null;
+
+    List<Tsk> MyCompTsk = ViewData["MyCompTsk"] != null ? (List<Tsk>)ViewData["MyCompTsk"] : null;
+
+
+
+    //ALL lists
+
+    List<Tsk> ALLTsks = ViewData["ALLTsks"] != null ? (List<Tsk>)ViewData["ALLTsks"] : null;
+
+    List<Tsk> ALLOverDueTsks = ViewData["ALLOverDueTsks"] != null ? (List<Tsk>)ViewData["ALLOverDueTsks"] : null;
+
+    List<Tsk> ALLCompTsk = ViewData["ALLCompTsk"] != null ? (List<Tsk>)ViewData["ALLCompTsk"] : null;
+
+}
+
+
+<style>
+
+    /* dropdown shows the options button for the project manager/admin */
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        padding: 12px 16px;
+        z-index: 1;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+
+
+    /* the tab shows the "my tasks" and "all tasks" */
+    /* Style the tab */
+    .tab {
+        overflow: hidden;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+    }
+
+        /* Style the buttons that are used to open the tab content */
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+        }
+
+            /* Change background color of buttons on hover */
+            .tab button:hover {
+                background-color: #ddd;
+            }
+
+            /* Create an active/current tablink class */
+            .tab button.active {
+                background-color: #ccc;
+            }
+
+    /* Style the tab content */
+    .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        border-top: none;
+    }
+
+
+    /* the colapsable shows the incomplete, upcoming and overdue tasks */
+    .collapsible {
+        background-color: #777;
+        color: white;
+        cursor: pointer;
+        padding: 18px;
+        width: 100%;
+        border: none;
+        text-align: left;
+        outline: none;
+        font-size: 15px;
+    }
+
+        .active, .collapsible:hover {
+            background-color: #555;
+        }
+
+        .collapsible:after {
+            content: '\002B';
+            color: white;
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+
+    .active:after {
+        content: "\2212";
+    }
+
+    .content {
+        padding: 0 18px;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.2s ease-out;
+    }
+
+    #butto:hover {
+        opacity: 0.8;
+    }
+
+
+    .row textarea {
+        text-transform: capitalize !important;
+    }
+</style>
+
+<body onload="openCityInt(event, 'MyTsk')">
+
+
+
+    <h4>@proName</h4>
+
+
+    <p>
+        @if ((SignInManager.IsSignedIn(User) && User.IsInRole("Admin")) || (SignInManager.IsSignedIn(User) && User.IsInRole("Manager")))
+        {
+
+            <a id="butto" asp-action="TskCreate" asp-route-id="@proId" class="btn btn-primary"><i class="fa fa-plus-square-o" aria-hidden="true"></i> New Task</a>
+
+        }
+
+        <a asp-controller="Project" asp-action="Index" class="btn btn-danger text-uppercase">Back</a>
+    </p>
+
+    @*defines what tabs show at the top and calls Javascript method to open them*@
+    <div class="tab">
+        <button style="font-weight: bold" class="tablinks active" onclick="openCity(event, 'MyTsk')">My Tasks</button>
+        <button style="font-weight: bold" class="tablinks" onclick="openCity(event, 'AllTsks')">All Tasks</button>
+    </div>
+
+    @*Tab code for what is inside the tab*@
+    <div id="MyTsk" class="tabcontent" style="display: block;padding-left: 0px;padding-right: 0px;padding-top: 0px;">
+
+
+        @*overdue tasks*@
+        @*check if there are no overdue tasks, if there aren't it wont show the overdue tasks at all'*@
+        @if (MyOverDueTsks.Count != 0)
+        {
+
+            //code for the collapsable labels to show or hide the overdue tasks
+            <button style="margin-top:5px" class="collapsible active">Overdue Tasks</button>
+            <div class="content" style="max-height: 807px;">
+                <div class="form-row" style="background-color:none">
+
+
+
+                    @if (MyOverDueTsks != null)
+                    {
+                        @foreach (var item in MyOverDueTsks)
+                        {
+
+                            <section class="col-lg-6 col-md-12 py-6">
+                                <div class="card m-3 " style="padding: 10px; box-shadow: 2px 2px 2px 2px #888888;">
+                                    <div class="card-header" style="color:blue; text-transform:capitalize">
+                                        <div class="row" style="display:flex; justify-content:space-between">
+
+                                            <div class="">
+                                                <a asp-action="TskDetails" asp-route-id="@item.TskId"><h4 style="display: -webkit-box; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: 1; -webkit-box-orient: vertical;">@Html.DisplayFor(modelItem => item.Name)</h4></a>
+                                            </div>
+
+                                            @if ((SignInManager.IsSignedIn(User) && User.IsInRole("Admin")) || (SignInManager.IsSignedIn(User) && User.IsInRole("Manager")))
+                                            {
+                                                <div class="nav-item dropdown" align="right">
+                                                    <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-v" aria-hidden="true" style="padding-right:8px"></i></a>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdown01" align="center" style="margin-left:-100px">
+                                                        <a class="dropdown-item" asp-controller="UserProjects" asp-action="IndexTsk" asp-route-id="@item.TskId">Manage Users</a>
+                                                        <a class="dropdown-item" asp-action="TskComp" asp-route-id="@item.TskId">View Results</a>
+                                                        <a class="dropdown-item" asp-action="TskEdit" asp-route-id="@item.TskId">Edit</a>
+                                                        <a class="dropdown-item" asp-action="TskDelete" asp-route-id="@item.TskId">Delete</a>
+                                                    </div>
+                                                </div>
+                                            }
+
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="column" style="padding: 6px;">
+                                                <textarea style="resize:none; padding: 5px; border-radius: 5px;border:none; outline-width: 0; width:100%;" readonly cols="70" rows="7">@Html.DisplayFor(modelItem => item.Description)</textarea>
+                                            </div>
+                                            <div class="column" style="margin-left: 5px; padding-left:5px">
+
+
+                                                @if (item.isComplete == false && ViewBag.DateNow > item.DateDue)
+                                                {
+                                                    <p style="padding: 4px;border:solid; border-width:1px; border-color: crimson; color: crimson; font-weight: bold; border-radius: 5px;">Task status : Overdue</p>
+                                                }
+                                                else if (item.isComplete == false)
+                                                {
+                                                    <p style="padding: 4px;border:solid; border-width:2px; border-color: yellow; color: black; font-weight: bold; border-radius: 5px;">Task status : In Progress</p>
+                                                }
+
+                                                @if (item.isComplete == true)
+                                                {
+                                                    <p style="padding: 4px;border:solid; border-width:1px; border-color: #27AE60; color: black; font-weight: bold; border-radius: 5px;">Task status : Complete</p>
+                                                }
+
+                                                @*<p>Start date: dd/mm/yy</p>*@
+
+                                                @if (item.isComplete == true && ViewBag.DateNow >= item.DateDue)
+                                                {
+                                                    <p style="padding: 4px;border:solid; border-width:1px; border-color: #27AE60; color: black; font-weight: bold; border-radius: 5px;">Due date: @Html.DisplayFor(modelItem => item.DateDue)</p>
+                                                }
+                                                else if (ViewBag.DateNow < item.DateDue)
+                                                {
+                                                    <p style="padding: 4px;border:solid; border-width:2px; border-color: yellow; color: black; font-weight: bold; border-radius: 5px;">Due date: @Html.DisplayFor(modelItem => item.DateDue)</p>
+                                                }
+                                                else
+                                                {
+                                                    <p style="padding: 4px;border:solid; border-width:1px; border-color: crimson; color: crimson; font-weight: bold; border-radius: 5px;">Due date: @Html.DisplayFor(modelItem => item.DateDue)</p>
+                                                }
+
+                                            </div>
+                                            <div>
+                                                @*<h6 style="text-align:right; margin-left: 9px;margin-bottom:-6px; ">Task manager</h6>*@
+                                            </div>
+
+                                        </div>
+
+
+                                    </div>
+                                    @*<div class="card-footer justify-content-center row">
+
+                                            <div style="padding: 5px; text-transform: uppercase" class="col-md-3" >
+                                                <a asp-action="TskEdit" class="btn btn-info btn-block " asp-route-id="@item.TskId">Edit</a>
+                                            </div>
+                                            <div style="padding: 5px; text-transform: uppercase " class="col-md-3">
+                                                <a asp-action="TskDetails" class="btn btn-info btn-block" asp-route-id="@item.TskId">View</a>
+                                            </div>
+                                            <div style="padding: 5px; text-transform: uppercase " class="col-md-3">
+                                                <a asp-action="TskDelete" class="btn btn-info btn-block " asp-route-id="@item.TskId">Delete</a>
+                                            </div>
+
+                                        </div>*@
+                                </div>
+                            </section>
+
+
+
+                            @*<tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Description)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.DateDue)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.ProjectRef.Name)
+                                    </td>
+                                    <td>
+                                        <a asp-action="Edit" asp-route-id="@item.TskId">Edit</a> |
+                                        <a asp-action="Details" asp-route-id="@item.TskId">Details</a> |
+                                        <a asp-action="Delete" asp-route-id="@item.TskId">Delete</a>
+                                    </td>
+                                </tr>*@
+
+                        }
+                    }
+
+                </div>
+
+            </div>
+
+        }
+
+
+
+
+
+        @*current tasks*@
+        <button style="margin-top:5px" class="collapsible">Upcoming Tasks</button>
+        <div class="content">
+
+            @if (MyTsks.Count == 0)
+            {
+                <p>You have no upcoming tasks</p>
+            }
+
+
+            <div class="form-row" style="background-color:none">
+
+
+
+                @if (MyTsks != null || MyTsks != null)
+                {
+                    @foreach (var item in MyTsks)
+                    {
+
+                        <section class="col-lg-6 col-md-12 py-6">
+                            <div class="card m-3 " style="padding: 10px; box-shadow: 2px 2px 2px 2px #888888; background-color: white">
+                                <div class="card-header" style="color:blue; text-transform:capitalize">
+                                    <div class="row" style="display:flex; justify-content:space-between">
+
+                                        <div class="">
+                                            <a asp-action="TskDetails" asp-route-id="@item.TskId"><h4 style="display: -webkit-box; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: 1; -webkit-box-orient: vertical;">@Html.DisplayFor(modelItem => item.Name)</h4></a>
+                                        </div>
+
+                                        @if ((SignInManager.IsSignedIn(User) && User.IsInRole("Admin")) || (SignInManager.IsSignedIn(User) && User.IsInRole("Manager")))
+                                        {
+                                            <div class="nav-item dropdown" align="right">
+                                                    <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-v" aria-hidden="true" style="padding-right:8px"></i></a>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdown01" align="center" style="margin-left:-100px">
+                                                        <a class="dropdown-item" asp-controller="UserProjects" asp-action="IndexTsk" asp-route-id="@item.TskId">Manage Users</a>
+                                                        <a class="dropdown-item" asp-action="TskComp" asp-route-id="@item.TskId">View Results</a>
+                                                        <a class="dropdown-item" asp-action="TskEdit" asp-route-id="@item.TskId">Edit</a>
+                                                        <a class="dropdown-item" asp-action="TskDelete" asp-route-id="@item.TskId">Delete</a>
+                                                    </div>
+                                                </div>
+                                        }
+
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="column" style="padding: 6px;">
+                                            <textarea style="resize:none; padding: 5px; border-radius: 5px;border:none; outline-width: 0; width:100%;" readonly cols="70" rows="7">@Html.DisplayFor(modelItem => item.Description)</textarea>
+                                        </div>
+                                        <div class="column" style="margin-left: 5px; padding-left:5px">
+
+
+                                            @if (item.isComplete == false && ViewBag.DateNow > item.DateDue)
+                                            {
+                                                <p style="padding: 4px;border:solid; border-width:1px; border-color: crimson; color: crimson; font-weight: bold; border-radius: 5px;">Task status : Overdue</p>
+                                            }
+                                            else if (item.isComplete == false)
+                                            {
+                                                <p style="padding: 4px;border:solid; border-width:2px; border-color: yellow; color: black; font-weight: bold; border-radius: 5px;">Task status : In Progress</p>
+                                            }
+
+                                            @if (item.isComplete == true)
+                                            {
+                                                <p style="padding: 4px;border:solid; border-width:1px; border-color: #27AE60; color: black; font-weight: bold; border-radius: 5px;">Task status : Complete</p>
+                                            }
+
+                                            @*<p>Start date: dd/mm/yy</p>*@
+
+                                            @*<p style="padding: 4px;border:solid; border-width:1px; border-color: #27AE60; color: black; font-weight: bold; border-radius: 5px;">Due date: @Html.DisplayFor(modelItem => item.DateDue)</p>*@
+                                            @if (item.isComplete == true && ViewBag.DateNow >= item.DateDue)
+                                            {
+                                                <p style="padding: 4px;border:solid; border-width:1px; border-color: #27AE60; color: black; font-weight: bold; border-radius: 5px;">Due date: @Html.DisplayFor(modelItem => item.DateDue)</p>
+                                            }
+                                            else if (ViewBag.DateNow < item.DateDue)
+                                            {
+                                                <p style="padding: 4px;border:solid; border-width:2px; border-color: yellow; color: black; font-weight: bold; border-radius: 5px;">Due date: @Html.DisplayFor(modelItem => item.DateDue)</p>
+                                            }
+                                            else
+                                            {
+                                                <p style="padding: 4px;border:solid; border-width:1px; border-color: crimson; color: crimson; font-weight: bold; border-radius: 5px;">Due date: @Html.DisplayFor(modelItem => item.DateDue)</p>
+                                            }
+                                        </div>
+                                        <div>
+                                            @*<h6 style="text-align:right; margin-left: 9px;margin-bottom:-6px; ">Task manager</h6>*@
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+                                @*<div class="card-footer justify-content-center row">
+
+                                        <div style="padding: 5px; text-transform: uppercase" class="col-md-3" >
+                                            <a asp-action="TskEdit" class="btn btn-info btn-block " asp-route-id="@item.TskId">Edit</a>
+                                        </div>
+                                        <div style="padding: 5px; text-transform: uppercase " class="col-md-3">
+                                            <a asp-action="TskDetails" class="btn btn-info btn-block" asp-route-id="@item.TskId">View</a>
+                                        </div>
+                                        <div style="padding: 5px; text-transform: uppercase " class="col-md-3">
+                                            <a asp-action="TskDelete" class="btn btn-info btn-block " asp-route-id="@item.TskId">Delete</a>
+                                        </div>
+
+                                    </div>*@
+                            </div>
+                        </section>
+
+
+
+                        @*<tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.DateDue)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ProjectRef.Name)
+                                </td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.TskId">Edit</a> |
+                                    <a asp-action="Details" asp-route-id="@item.TskId">Details</a> |
+                                    <a asp-action="Delete" asp-route-id="@item.TskId">Delete</a>
+                                </td>
+                            </tr>*@
+
+                    }
+                }
+
+            </div>
+
+        </div>
+
+
+
+
+        @*completed tasks*@
+        @*check if there are no completes tasks, if there aren't it wont show the overdue tasks at all'*@
+        @if (MyCompTsk.Count != 0)
+        {
+
+            //code for the collapsable labels to show or hide the completed tasks
+            <button style="margin-top:5px" class="collapsible">Completed Tasks</button>
+            <div class="content">
+                <div class="form-row" style="background-color:none">
+
+
+
+                    @if (MyCompTsk != null)
+                    {
+                        @foreach (var item in MyCompTsk)
+                        {
+
+                            <section class="col-lg-6 col-md-12 py-6">
+                                <div class="card m-3 " style="padding: 10px; box-shadow: 2px 2px 2px 2px #888888; background-color: white">
+                                    <div class="card-header" style="color:blue; text-transform:capitalize">
+                                        <div class="row" style="display:flex; justify-content:space-between">
+
+                                            <div class="col-sm-9">
+                                                <a asp-action="TskDetails" asp-route-id="@item.TskId"><h4 style="display: -webkit-box; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: 1; -webkit-box-orient: vertical;">@Html.DisplayFor(modelItem => item.Name)</h4></a>
+                                            </div>
+
+                                            @if ((SignInManager.IsSignedIn(User) && User.IsInRole("Admin")) || (SignInManager.IsSignedIn(User) && User.IsInRole("Manager")))
+                                            {
+                                                <div class="nav-item dropdown" align="right">
+                                                    <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-v" aria-hidden="true" style="padding-right:8px"></i></a>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdown01" align="center" style="margin-left:-100px">
+                                                        <a class="dropdown-item" asp-controller="UserProjects" asp-action="IndexTsk" asp-route-id="@item.TskId">Manage Users</a>
+                                                        <a class="dropdown-item" asp-action="TskComp" asp-route-id="@item.TskId">View Results</a>
+                                                        <a class="dropdown-item" asp-action="TskEdit" asp-route-id="@item.TskId">Edit</a>
+                                                        <a class="dropdown-item" asp-action="TskDelete" asp-route-id="@item.TskId">Delete</a>
+                                                    </div>
+                                                </div>
+                                            }
+
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="column" style="padding: 6px;">
+                                                <textarea style="resize:none; padding: 5px; border-radius: 5px;border:none; outline-width: 0; width:100%;" readonly cols="70" rows="7">@Html.DisplayFor(modelItem => item.Description)</textarea>
+                                            </div>
+                                            <div class="column" style="margin-left: 5px; padding-left:5px">
+
+
+                                                @if (item.isComplete == false && ViewBag.DateNow > item.DateDue)
+                                                {
+                                                    <p style="padding: 4px;border:solid; border-width:1px; border-color: crimson; color: crimson; font-weight: bold; border-radius: 5px;">Task status : Overdue</p>
+                                                }
+                                                else if (item.isComplete == false)
+                                                {
+                                                    <p style="padding: 4px;border:solid; border-width:2px; border-color: yellow; color: black; font-weight: bold; border-radius: 5px;">Task status : In Progress</p>
+                                                }
+
+                                                @if (item.isComplete == true)
+                                                {
+                                                    <p style="padding: 4px;border:solid; border-width:1px; border-color: #27AE60; color: black; font-weight: bold; border-radius: 5px;">Task status : Complete</p>
+                                                }
+
+                                                @*<p>Start date: dd/mm/yy</p>*@
+
+                                                @*<p style="padding: 4px;border:solid; border-width:1px; border-color: #27AE60; color: black; font-weight: bold; border-radius: 5px;">Due date: @Html.DisplayFor(modelItem => item.DateDue)</p>*@
+                                                @if (item.isComplete == true && ViewBag.DateNow >= item.DateDue)
+                                                {
+                                                    <p style="padding: 4px;border:solid; border-width:1px; border-color: #27AE60; color: black; font-weight: bold; border-radius: 5px;">Due date: @Html.DisplayFor(modelItem => item.DateDue)</p>
+                                                }
+                                                else if (ViewBag.DateNow < item.DateDue)
+                                                {
+                                                    <p style="padding: 4px;border:solid; border-width:2px; border-color: yellow; color: black; font-weight: bold; border-radius: 5px;">Due date: @Html.DisplayFor(modelItem => item.DateDue)</p>
+                                                }
+                                                else
+                                                {
+                                                    <p style="padding: 4px;border:solid; border-width:1px; border-color: crimson; color: crimson; font-weight: bold; border-radius: 5px;">Due date: @Html.DisplayFor(modelItem => item.DateDue)</p>
+                                                }
+                                            </div>
+                                            <div>
+                                                @*<h6 style="text-align:right; margin-left: 9px;margin-bottom:-6px; ">Task manager</h6>*@
+                                            </div>
+
+                                        </div>
+
+
+                                    </div>
+                                    @*<div class="card-footer justify-content-center row">
+
+                                            <div style="padding: 5px; text-transform: uppercase" class="col-md-3" >
+                                                <a asp-action="TskEdit" class="btn btn-info btn-block " asp-route-id="@item.TskId">Edit</a>
+                                            </div>
+                                            <div style="padding: 5px; text-transform: uppercase " class="col-md-3">
+                                                <a asp-action="TskDetails" class="btn btn-info btn-block" asp-route-id="@item.TskId">View</a>
+                                            </div>
+                                            <div style="padding: 5px; text-transform: uppercase " class="col-md-3">
+                                                <a asp-action="TskDelete" class="btn btn-info btn-block " asp-route-id="@item.TskId">Delete</a>
+                                            </div>
+
+                                        </div>*@
+                                </div>
+                            </section>
+
+
+
+                            @*<tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Description)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.DateDue)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.ProjectRef.Name)
+                                    </td>
+                                    <td>
+                                        <a asp-action="Edit" asp-route-id="@item.TskId">Edit</a> |
+                                        <a asp-action="Details" asp-route-id="@item.TskId">Details</a> |
+                                        <a asp-action="Delete" asp-route-id="@item.TskId">Delete</a>
+                                    </td>
+                                </tr>*@
+
+                        }
+                    }
+
+                </div>
+
+            </div>
+
+        }
+
+    </div>
+
+
+
+
+
+
+    @*ALL tasks page*@
+    <div id="AllTsks" class="tabcontent" style="display: block;padding-left: 0px;padding-right: 0px;padding-top: 0px;">
+
+        @*overdue tasks*@
+        @*check if there are no overdue tasks, if there aren't it wont show the overdue tasks at all'*@
+        @if (ALLOverDueTsks.Count != 0)
+        {
+
+            //code for the collapsable labels to show or hide the overdue tasks
+            <button style="margin-top:5px" class="collapsible">Overdue Tasks</button>
+            <div class="content">
+                <div class="form-row" style="background-color:none">
+
+
+
+                    @if (ALLOverDueTsks != null)
+                    {
+                        @foreach (var item in ALLOverDueTsks)
+                        {
+
+                            <section class="col-lg-6 col-md-12 py-6">
+                                <div class="card m-3 " style="padding: 10px; box-shadow: 2px 2px 2px 2px #888888; ">
+                                    <div class="card-header" style="color:blue; text-transform:capitalize">
+                                        <div class="row" style="display:flex; justify-content:space-between">
+
+                                            <div class="">
+                                                @*<a asp-action="TskDetails" asp-route-id="@item.TskId"><h4>@Html.DisplayFor(modelItem => item.Name)</h4></a>*@
+
+                                                <h4 style="display: -webkit-box; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: 1; -webkit-box-orient: vertical;">@Html.DisplayFor(modelItem => item.Name)</h4>
+                                            </div>
+
+                                            @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                                            {
+                                                <div class="nav-item dropdown" align="right">
+                                                    <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-v" aria-hidden="true" style="padding-right:8px"></i></a>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdown01" align="center" style="margin-left:-100px">
+                                                        <a class="dropdown-item" asp-controller="UserProjects" asp-action="IndexTsk" asp-route-id="@item.TskId">Manage Users</a>
+                                                        <a class="dropdown-item" asp-action="TskComp" asp-route-id="@item.TskId">View Results</a>
+                                                        <a class="dropdown-item" asp-action="TskEdit" asp-route-id="@item.TskId">Edit</a>
+                                                        <a class="dropdown-item" asp-action="TskDelete" asp-route-id="@item.TskId">Delete</a>
+                                                    </div>
+                                                </div>
+                                            }
+
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="column" style="padding: 6px;">
+                                                <textarea style="resize:none; padding: 5px; border-radius: 5px; border:none;outline-width: 0; width:100%;" readonly cols="70" rows="7">@Html.DisplayFor(modelItem => item.Description)</textarea>
+                                            </div>
+                                            <div class="column" style="margin-left: 5px; padding-left:5px">
+                                                @if (item.isComplete == false && ViewBag.DateNow > item.DateDue)
+                                                {
+                                                    <p style="padding: 4px;border:solid; border-width:1px; border-color: crimson; color: crimson; font-weight: bold; border-radius: 5px;">Task status : Overdue</p>
+                                                }
+                                                else if (item.isComplete == false)
+                                                {
+                                            <p style="padding: 4px;border:solid; border-width:2px; border-color: yellow; color: black; font-weight: bold; border-radius: 5px;">Task status : In Progress</p>
+                                                }
+
+                                                @if (item.isComplete == true)
+                                                {
+                                            <p style="padding: 4px;border:solid; border-width:1px; border-color: #27AE60; color: black; font-weight: bold; border-radius: 5px;">Task status : Complete</p>
+                                                }
+
+
+                                              
+
+                                                @*<p>Start date: dd/mm/yy</p>*@
+
+                                                @*<p style="padding: 4px; background-color: white; color: black; font-weight: bold; border-radius: 5px;">Due date: @Html.DisplayFor(modelItem => item.DateDue)</p>*@
+                                                @if (item.isComplete == true && ViewBag.DateNow >= item.DateDue)
+                                                {
+                                                    <p style="padding: 4px;border:solid; border-width:1px; border-color: #27AE60; color: black; font-weight: bold; border-radius: 5px;">Due date: @Html.DisplayFor(modelItem => item.DateDue)</p>
+                                                }
+                                                else if (ViewBag.DateNow < item.DateDue)
+                                                {
+                                                    <p style="padding: 4px;border:solid; border-width:2px; border-color: yellow; color: black; font-weight: bold; border-radius: 5px;">Due date: @Html.DisplayFor(modelItem => item.DateDue)</p>
+                                                }
+                                                else
+                                                {
+                                                    <p style="padding: 4px;border:solid; border-width:1px; border-color: crimson; color: crimson; font-weight: bold; border-radius: 5px;">Due date: @Html.DisplayFor(modelItem => item.DateDue)</p>
+                                                }
+                                            </div>
+                                            <div>
+                                                @*<h6 style="text-align:right; margin-left: 9px;margin-bottom:-6px; ">Task manager</h6>*@
+                                            </div>
+
+                                        </div>
+
+
+                                    </div>
+                                    @*<div class="card-footer justify-content-center row">
+
+                                            <div style="padding: 5px; text-transform: uppercase" class="col-md-3" >
+                                                <a asp-action="TskEdit" class="btn btn-info btn-block " asp-route-id="@item.TskId">Edit</a>
+                                            </div>
+                                            <div style="padding: 5px; text-transform: uppercase " class="col-md-3">
+                                                <a asp-action="TskDetails" class="btn btn-info btn-block" asp-route-id="@item.TskId">View</a>
+                                            </div>
+                                            <div style="padding: 5px; text-transform: uppercase " class="col-md-3">
+                                                <a asp-action="TskDelete" class="btn btn-info btn-block " asp-route-id="@item.TskId">Delete</a>
+                                            </div>
+
+                                        </div>*@
+                                </div>
+                            </section>
+
+
+
+                            @*<tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Description)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.DateDue)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.ProjectRef.Name)
+                                    </td>
+                                    <td>
+                                        <a asp-action="Edit" asp-route-id="@item.TskId">Edit</a> |
+                                        <a asp-action="Details" asp-route-id="@item.TskId">Details</a> |
+                                        <a asp-action="Delete" asp-route-id="@item.TskId">Delete</a>
+                                    </td>
+                                </tr>*@
+
+                        }
+                    }
+
+                </div>
+
+            </div>
+
+        }
+
+
+
+
+
+        @*current tasks*@
+        <button style="margin-top:5px" class="collapsible">Upcoming Tasks</button>
+        <div class="content">
+
+            @if (ALLTsks.Count == 0)
+            {
+                <p>You have no upcoming tasks</p>
+            }
+
+
+            <div class="form-row" style="background-color:none">
+
+                @if (ALLTsks != null)
+                {
+                    @foreach (var item in ALLTsks)
+                    {
+
+                        <section class="col-lg-6 col-md-12 py-6">
+                            <div class="card m-3 " style="padding: 10px; box-shadow: 2px 2px 2px 2px #888888; background-color: white">
+                                <div class="card-header" style="color:blue; text-transform:capitalize">
+                                    <div class="row" style="display:flex; justify-content:space-between">
+
+                                        <div class="">
+                                            @*<a asp-action="TskDetails" asp-route-id="@item.TskId"><h4>@Html.DisplayFor(modelItem => item.Name)</h4></a>*@
+
+                                            <h4 style="display: -webkit-box; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: 1; -webkit-box-orient: vertical;">@Html.DisplayFor(modelItem => item.Name)</h4>
+                                        </div>
+
+                                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                                        {
+                                            <div class="nav-item dropdown" align="right">
+                                                    <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-v" aria-hidden="true" style="padding-right:8px"></i></a>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdown01" align="center" style="margin-left:-100px">
+                                                        <a class="dropdown-item" asp-controller="UserProjects" asp-action="IndexTsk" asp-route-id="@item.TskId">Manage Users</a>
+                                                        <a class="dropdown-item" asp-action="TskComp" asp-route-id="@item.TskId">View Results</a>
+                                                        <a class="dropdown-item" asp-action="TskEdit" asp-route-id="@item.TskId">Edit</a>
+                                                        <a class="dropdown-item" asp-action="TskDelete" asp-route-id="@item.TskId">Delete</a>
+                                                    </div>
+                                                </div>
+                                        }
+
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="column" style="padding: 6px;">
+                                            <textarea style="resize:none; padding: 5px; border-radius: 5px; border:none; outline-width: 0; width:100%;" readonly cols="70" rows="7">@Html.DisplayFor(modelItem => item.Description)</textarea>
+                                        </div>
+                                        <div class="column" style="margin-left: 5px; padding-left:5px">
+
+
+                                            @if (item.isComplete == false && ViewBag.DateNow > item.DateDue)
+                                            {
+                                                <p style="padding: 4px;border:solid; border-width:1px; border-color: crimson; color: crimson; font-weight: bold; border-radius: 5px;">Task status : Overdue</p>
+                                            }
+                                            else if (item.isComplete == false)
+                                            {
+                                                <p style="padding: 4px;border:solid; border-width:2px; border-color: yellow; color: black; font-weight: bold; border-radius: 5px;">Task status : In Progress</p>
+                                            }
+
+                                            @if (item.isComplete == true)
+                                            {
+                                                <p style="padding: 4px;border:solid; border-width:1px; border-color: #27AE60; color: black; font-weight: bold; border-radius: 5px;">Task status : Complete</p>
+                                            }
+
+                                            @*<p>Start date: dd/mm/yy</p>*@
+
+                                            @*<p style="padding: 4px;border:solid; border-width:1px; border-color: #27AE60; color: black; font-weight: bold; border-radius: 5px;">Due date: @Html.DisplayFor(modelItem => item.DateDue)</p>*@
+                                            @if (item.isComplete == true && ViewBag.DateNow >= item.DateDue)
+                                            {
+                                                <p style="padding: 4px;border:solid; border-width:1px; border-color: #27AE60; color: black; font-weight: bold; border-radius: 5px;">Due date: @Html.DisplayFor(modelItem => item.DateDue)</p>
+                                            }
+                                            else if (ViewBag.DateNow < item.DateDue)
+                                            {
+                                                <p style="padding: 4px;border:solid; border-width:2px; border-color: yellow; color: black; font-weight: bold; border-radius: 5px;">Due date: @Html.DisplayFor(modelItem => item.DateDue)</p>
+                                            }
+                                            else
+                                            {
+                                                <p style="padding: 4px;border:solid; border-width:1px; border-color: crimson; color: crimson; font-weight: bold; border-radius: 5px;">Due date: @Html.DisplayFor(modelItem => item.DateDue)</p>
+                                            }
+                                        </div>
+                                        <div>
+                                            @*<h6 style="text-align:right; margin-left: 9px;margin-bottom:-6px; ">Task manager</h6>*@
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+                                @*<div class="card-footer justify-content-center row">
+
+                                        <div style="padding: 5px; text-transform: uppercase" class="col-md-3" >
+                                            <a asp-action="TskEdit" class="btn btn-info btn-block " asp-route-id="@item.TskId">Edit</a>
+                                        </div>
+                                        <div style="padding: 5px; text-transform: uppercase " class="col-md-3">
+                                            <a asp-action="TskDetails" class="btn btn-info btn-block" asp-route-id="@item.TskId">View</a>
+                                        </div>
+                                        <div style="padding: 5px; text-transform: uppercase " class="col-md-3">
+                                            <a asp-action="TskDelete" class="btn btn-info btn-block " asp-route-id="@item.TskId">Delete</a>
+                                        </div>
+
+                                    </div>*@
+                            </div>
+                        </section>
+
+
+
+                        @*<tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.DateDue)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ProjectRef.Name)
+                                </td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.TskId">Edit</a> |
+                                    <a asp-action="Details" asp-route-id="@item.TskId">Details</a> |
+                                    <a asp-action="Delete" asp-route-id="@item.TskId">Delete</a>
+                                </td>
+                            </tr>*@
+
+                    }
+                }
+
+            </div>
+
+        </div>
+
+
+
+
+        @*completed tasks*@
+        @*check if there are no completes tasks, if there aren't it wont show the overdue tasks at all'*@
+        @if (ALLCompTsk.Count != 0)
+        {
+
+            //code for the collapsable labels to show or hide the completed tasks
+            <button style="margin-top:5px" class="collapsible">Completed Tasks</button>
+            <div class="content">
+                <div class="form-row" style="background-color:none">
+
+
+
+                    @if (ALLCompTsk != null)
+                    {
+                        @foreach (var item in ALLCompTsk)
+                        {
+
+                            <section class="col-lg-6 col-md-12 py-6">
+                                <div class="card m-3 " style="padding: 10px; box-shadow: 2px 2px 2px 2px #888888; background-color: white">
+                                    <div class="card-header" style="color:blue; text-transform:capitalize">
+                                        <div class="row" style="display:flex; justify-content:space-between">
+
+                                            <div class="">
+                                                @*<a asp-action="TskDetails" asp-route-id="@item.TskId"><h4>@Html.DisplayFor(modelItem => item.Name)</h4></a>*@
+
+                                                <h4 style="display: -webkit-box; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: 1; -webkit-box-orient: vertical;">@Html.DisplayFor(modelItem => item.Name)</h4>
+                                            </div>
+
+                                            @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                                            {
+                                                <div class="nav-item dropdown" align="right">
+                                                    <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-ellipsis-v" aria-hidden="true" style="padding-right:8px"></i></a>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdown01" align="center" style="margin-left:-100px">
+                                                        <a class="dropdown-item" asp-controller="UserProjects" asp-action="IndexTsk" asp-route-id="@item.TskId">Manage Users</a>
+                                                        <a class="dropdown-item" asp-action="TskComp" asp-route-id="@item.TskId">View Results</a>
+                                                        <a class="dropdown-item" asp-action="TskEdit" asp-route-id="@item.TskId">Edit</a>
+                                                        <a class="dropdown-item" asp-action="TskDelete" asp-route-id="@item.TskId">Delete</a>
+                                                    </div>
+                                                </div>
+
+                                            }
+
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="column" style="padding: 6px;">
+                                                <textarea style="resize:none; padding: 5px; border-radius: 5px; border:none; outline-width: 0; width:100%;" readonly cols="70" rows="7">@Html.DisplayFor(modelItem => item.Description)</textarea>
+                                            </div>
+                                            <div class="column" style="margin-left: 5px; padding-left:5px">
+
+
+                                                @if (item.isComplete == false && ViewBag.DateNow > item.DateDue)
+                                                {
+                                                    <p style="padding: 4px;border:solid; border-width:1px; border-color: crimson; color: crimson; font-weight: bold; border-radius: 5px;">Task status : Overdue</p>
+                                                }
+                                                else if (item.isComplete == false)
+                                                {
+                                                    <p style="padding: 4px;border:solid; border-width:2px; border-color: yellow; color: black; font-weight: bold; border-radius: 5px;">Task status : In Progress</p>
+                                                }
+
+                                                @if (item.isComplete == true)
+                                                {
+                                                    <p style="padding: 4px;border:solid; border-width:1px; border-color: #27AE60; color: black; font-weight: bold; border-radius: 5px;">Task status : Complete</p>
+                                                }
+
+                                                @*<p>Start date: dd/mm/yy</p>*@
+
+                                                @*<p style="padding: 4px;border:solid; border-width:1px; border-color: #27AE60; color: black; font-weight: bold; border-radius: 5px;">Due date: @Html.DisplayFor(modelItem => item.DateDue)</p>*@
+                                                @if (item.isComplete == true && ViewBag.DateNow >= item.DateDue)
+                                                {
+                                                    <p style="padding: 4px;border:solid; border-width:1px; border-color: #27AE60; color: black; font-weight: bold; border-radius: 5px;">Due date: @Html.DisplayFor(modelItem => item.DateDue)</p>
+                                                }
+                                                else if (ViewBag.DateNow < item.DateDue)
+                                                {
+                                                    <p style="padding: 4px;border:solid; border-width:2px; border-color: yellow; color: black; font-weight: bold; border-radius: 5px;">Due date: @Html.DisplayFor(modelItem => item.DateDue)</p>
+                                                }
+                                                else
+                                                {
+                                                    <p style="padding: 4px;border:solid; border-width:1px; border-color: crimson; color: crimson; font-weight: bold; border-radius: 5px;">Due date: @Html.DisplayFor(modelItem => item.DateDue)</p>
+                                                }
+                                            </div>
+                                            <div>
+                                                @*<h6 style="text-align:right; margin-left: 9px;margin-bottom:-6px; ">Task manager</h6>*@
+                                            </div>
+
+                                        </div>
+
+
+                                    </div>
+                                    @*<div class="card-footer justify-content-center row">
+
+                                            <div style="padding: 5px; text-transform: uppercase" class="col-md-3" >
+                                                <a asp-action="TskEdit" class="btn btn-info btn-block " asp-route-id="@item.TskId">Edit</a>
+                                            </div>
+                                            <div style="padding: 5px; text-transform: uppercase " class="col-md-3">
+                                                <a asp-action="TskDetails" class="btn btn-info btn-block" asp-route-id="@item.TskId">View</a>
+                                            </div>
+                                            <div style="padding: 5px; text-transform: uppercase " class="col-md-3">
+                                                <a asp-action="TskDelete" class="btn btn-info btn-block " asp-route-id="@item.TskId">Delete</a>
+                                            </div>
+
+                                        </div>*@
+                                </div>
+                            </section>
+
+
+
+                            @*<tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Description)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.DateDue)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.ProjectRef.Name)
+                                    </td>
+                                    <td>
+                                        <a asp-action="Edit" asp-route-id="@item.TskId">Edit</a> |
+                                        <a asp-action="Details" asp-route-id="@item.TskId">Details</a> |
+                                        <a asp-action="Delete" asp-route-id="@item.TskId">Delete</a>
+                                    </td>
+                                </tr>*@
+
+                        }
+                    }
+
+                </div>
+
+            </div>
+
+        }
+
+
+
+    </div>
+
+</body>
+
+
+
+<script>
+
+    function openCityInt(evt, cityName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        document.getElementById(cityName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+
+    function openCity(evt, cityName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(cityName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+
+
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+
+    for (i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        });
+    }
+
+
+
+
+</script>
+
+
+@*</tbody>
+    </table>*@

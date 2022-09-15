@@ -1,0 +1,151 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model PolyFix.Models.CompletedSurvey;
+@using Newtonsoft.Json.Linq;
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Survey";
+
+
+
+}
+
+
+<div class="row">
+    <div class="col">
+        <div id="surveyContainer"></div>
+    </div>
+</div>
+
+
+
+@section Scripts
+{
+    <script src="https://unpkg.com/jquery"></script>
+    <script src="https://unpkg.com/survey-jquery@1.8.48/survey.jquery.min.js"></script>
+    <script type="text/javascript" src="./index.js"></script>
+
+    <script>
+
+
+        var surveyJSON = {
+            title: "Incident Register", questions: [
+                {
+                    name: "Ref",
+                    type: "text",
+                    title: "Reference Number",
+                    isRequired: true,
+                }
+
+                , {
+                    name: "DT",
+                    type: "text",
+                    inputType: "date",
+                    title: "Date",
+                    isRequired: true
+                }
+
+                , {
+                    name: "DTclose",
+                    type: "text",
+                    inputType: "date",
+                    title: "Close out date",
+                    isRequired: true
+                }
+
+
+                , {
+                    type: "comment",
+                    name: "suggestions",
+                    title: "Short description of incident and root cause"
+                }
+
+
+                , {
+                    type: "radiogroup",
+                    name: "Class",
+                    title: "Incident Classification",
+                    isRequired: false,
+                    colCount: 1,
+                    choices: [
+                        "Saftey",
+                        "Health",
+                        "Environment",
+                    ]
+                }
+
+
+                , {
+                    type: "checkbox",
+                    name: "Saftey",
+                    title: "Saftey",
+                    visibleIf: "{Class}='Saftey'",
+                    isRequired: false,
+                    colCount: 1,
+                    choices: [
+                        "Fatality",
+                        "Permanent Disability ",
+                        "Lost Work Day",
+                        "Restricted Day Case",
+                        "Medical Treatment",
+                        "First Aid Case"
+                    ]
+                }
+
+
+                , {
+                    type: "checkbox",
+                    name: "Health",
+                    title: "Health",
+                    visibleIf: "{Class}='Health'",
+                    isRequired: false,
+                    colCount: 1,
+                    choices: [
+                        "Health Fatality",
+                        "Irreversible Occupational Diagnosed Disease",
+                        "Revisable Occupational Diagnosed Disease",
+                        "Noise Induced Hearing Loss"
+                    ]
+                }
+
+                , {
+                    type: "checkbox",
+                    name: "Env",
+                    title: "Environment",
+                    visibleIf: "{Class}='Environment'",
+                    isRequired: false,
+                    colCount: 3,
+                    choices: [
+                        "Major",
+                        "Medium",
+                        "Minor"
+                    ]
+                }
+
+
+                ,
+                {
+                    type: "signaturepad",
+                    name: "signature",
+                    title: "Employee signature"
+                }
+            ],
+
+            "showQuestionNumbers": "off"
+        };
+
+        Survey.StylesManager.applyTheme("bootstrap");
+        var survey = new Survey.Model(surveyJSON);
+        let Res = @Html.Raw(Model.SurveyResult);
+        $("#surveyContainer").Survey({
+            model: survey,
+            data: Res,
+            //onComplete: saveSurvey
+        });
+
+        survey.mode = 'display';
+        survey.showCompletedPage = false;
+
+    </script>
+}

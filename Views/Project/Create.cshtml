@@ -1,0 +1,69 @@
+﻿@model Poly.Models.Project
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+
+
+<h4>New Project</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" cols="6" rows="5" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Location" class="control-label"></label>
+                <input asp-for="Location" class="form-control" />
+                <span asp-validation-for="Location" class="text-danger"></span>
+            </div>
+            @*<div class="form-group">
+            <label asp-for="ProjectImage" class="control-label"></label>
+            <input asp-for="ProjectImage" class="form-control" />
+            <span asp-validation-for="ProjectImage" class="text-danger"></span>
+        </div>*@
+            @*<div method="post" enctype="multipart/form-data">*@
+            @*<div class="form-group">
+            <div class="col-md-10">
+                <label asp-for="ProjectImage" class="control-label"></label>
+                <input asp-for="ProjectImage" class="custom-file-input" />
+            </div>
+        </div>*@
+            <!--<div class="form-group">
+                <label asp-for="ProjectImage" class="control-label"></label>
+                <div class="custom-file">
+                    <input asp-for="ProjectImage" class="form-control" type="file" accept="image/*">-->
+                    @*<label class="custom-file-label" asp-for="ProjectImage">Choose Image</label>*@
+                <!--</div>
+            </div>-->
+
+                @*<div class="form-group">
+                <div class="col-md-10">
+                    <p>Upload file</p>
+                    <input class="form-control" asp-for="ProjectImage" type="file" accept="image/*" />
+                </div>
+            </div>*@
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary text-uppercase" />
+                </div>
+        </form>
+</div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-danger text-uppercase">Back</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
